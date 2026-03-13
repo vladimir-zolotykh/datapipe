@@ -30,9 +30,9 @@ def open_files_iter(names: Iterator[str]) -> Iterator[OPEN_IO]:
         fo.close()
 
 
-# def iter_chain():
-#     for it in input_iters:
-#         yield from it
+def read_lines_iter(open_files: Iterator[OPEN_IO]) -> Iterator[OPEN_IO]:
+    for fo in open_files:
+        yield from fo
 
 
 # def iter_lines(
@@ -42,5 +42,10 @@ def open_files_iter(names: Iterator[str]) -> Iterator[OPEN_IO]:
 
 
 if __name__ == "__main__":
-    for f in files_iter("www", "*"):
-        print(f)
+    # for f in files_iter("www", "*"):
+    #     print(f)
+    files = files_iter("www", "access-log")
+    file_objects = open_files_iter(files)
+    lines = read_lines_iter(file_objects)
+    for line in lines:
+        print(f"{line = }")
