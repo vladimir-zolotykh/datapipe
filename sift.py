@@ -7,6 +7,7 @@ import os
 import fnmatch
 import gzip
 import bz2
+import re
 
 OPEN_IO = Union[gzip.GzipFile, bz2.BZ2File, TextIO]
 
@@ -35,10 +36,10 @@ def read_lines_iter(open_files: Iterator[OPEN_IO]) -> Iterator[bytes | str]:
         yield from fo
 
 
-# def iter_lines(
-#     open_files: Iterator[OPEN_IO], line_selector: str
-# ) -> Iterator[str]:
-#     pass
+def match_lines_iter(lines: Iterator[bytes | str], pat: str) -> Iterator[str]:
+    for line in lines:
+        if re.match(pat, line):
+            yield line
 
 
 if __name__ == "__main__":
@@ -47,5 +48,6 @@ if __name__ == "__main__":
     files = files_iter("www", "access-log")
     file_objects = open_files_iter(files)
     lines = read_lines_iter(file_objects)
-    for line in lines:
+    res = match_lines_iter(lines, ".*ply.*")
+    for line in res:
         print(f"{line = }")
