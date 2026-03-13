@@ -30,7 +30,7 @@ def open_files_iter(names: Iterator[str]) -> Iterator[OPEN_IO]:
         fo.close()
 
 
-def read_lines_iter(open_files: Iterator[OPEN_IO]) -> Iterator[OPEN_IO]:
+def read_lines_iter(open_files: Iterator[OPEN_IO]) -> Iterator[bytes | str]:
     for fo in open_files:
         yield from fo
 
