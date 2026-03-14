@@ -46,6 +46,7 @@ def match_lines_iter(lines: Iterator[str], pat: str) -> Iterator[str]:
 
 FILE_PAT = "*108*"
 LINE_PAT = "173064"
+
 parser = argparse.ArgumentParser(
     description="Parse FILE_PAT, LINE_PAT",
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -72,3 +73,7 @@ if __name__ == "__main__":
     res = match_lines_iter(lines, args.line_pat)
     for line in res:
         print(line, end="")
+
+# $ python sift.py --file-pat=*108* --line-pat=173064
+# 81.48.212.152 - - [25/Feb/2008:09:46:03 -0600] "GET /ply/PLYTalk.pdf HTTP/1.1" 206 173064
+# 81.48.212.152 - - [25/Feb/2008:09:46:03 -0600] "GET /ply/PLYTalk.pdf HTTP/1.1" 206 173064
