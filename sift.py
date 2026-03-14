@@ -31,20 +31,18 @@ def open_files_iter(names: Iterator[str]) -> Iterator[OPEN_IO]:
         fo.close()
 
 
-def read_lines_iter(open_files: Iterator[OPEN_IO]) -> Iterator[bytes | str]:
+def read_lines_iter(open_files: Iterator[OPEN_IO]) -> Iterator[str | bytes]:
     for fo in open_files:
         yield from fo
 
 
-def match_lines_iter(lines: Iterator[bytes | str], pat: str) -> Iterator[str]:
+def match_lines_iter(lines: Iterator[str], pat: str) -> Iterator[str]:
     for line in lines:
-        if re.match(pat, line):
+        if re.search(pat, line):
             yield line
 
 
 if __name__ == "__main__":
-    # for f in files_iter("www", "*"):
-    #     print(f)
     files = files_iter("www", "access-log")
     file_objects = open_files_iter(files)
     lines = read_lines_iter(file_objects)
