@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
 from typing import Iterator
-from typing import Union, TextIO
+from typing import TextIO
 import os
 import fnmatch
 import gzip
@@ -11,7 +11,6 @@ import re
 import argparse
 import argcomplete
 
-# OPEN_IO = Union[gzip.GzipFile, bz2.BZ2File, TextIO]
 OPEN_IO = TextIO
 
 
