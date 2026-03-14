@@ -9,7 +9,8 @@ import gzip
 import bz2
 import re
 
-OPEN_IO = Union[gzip.GzipFile, bz2.BZ2File, TextIO]
+# OPEN_IO = Union[gzip.GzipFile, bz2.BZ2File, TextIO]
+OPEN_IO = TextIO
 
 
 def files_iter(top: str, pat: str) -> Iterator[str]:
@@ -22,16 +23,16 @@ def open_files_iter(names: Iterator[str]) -> Iterator[OPEN_IO]:
     for fn in names:
         fo: OPEN_IO
         if fn.endswith(".gz"):
-            fo = gzip.open(fn, "rb")
+            fo = gzip.open(fn, "rt")
         elif fn.endswith(".bz2"):
-            fo = bz2.open(fn, "rb")
+            fo = bz2.open(fn, "rt")
         else:
             fo = open(fn, "rt")
         yield fo
         fo.close()
 
 
-def read_lines_iter(open_files: Iterator[OPEN_IO]) -> Iterator[str | bytes]:
+def read_lines_iter(open_files: Iterator[OPEN_IO]) -> Iterator[str]:
     for fo in open_files:
         yield from fo
 
