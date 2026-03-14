@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+
+# $ python sift.py --file-pat=*108* --line-pat=1730 64
+# 81.48.212.152 - - [25/Feb/2008:09:46:03 -0600] "GET /ply/PLYTalk.pdf HTTP/1.1" 206 173064
+# 81.48.212.152 - - [25/Feb/2008:09:46:03 -0600] "GET /ply/PLYTalk.pdf HTTP/1.1" 206 173064
+
 from typing import Iterator
 from typing import TextIO
 import os
@@ -44,6 +49,11 @@ def match_lines_iter(lines: Iterator[str], pat: str) -> Iterator[str]:
             yield line
 
 
+def bytes_count_iter(lines: Iterator[str]) -> Iterator[float]:
+    for line in lines:
+        yield float(line.rsplit(None, 1)[1])
+
+
 FILE_PAT = "*108*"
 LINE_PAT = "173064"
 
@@ -71,9 +81,7 @@ if __name__ == "__main__":
     file_objects = open_files_iter(files)
     lines = read_lines_iter(file_objects)
     res = match_lines_iter(lines, args.line_pat)
-    for line in res:
-        print(line, end="")
-
-# $ python sift.py --file-pat=*108* --line-pat=173064
-# 81.48.212.152 - - [25/Feb/2008:09:46:03 -0600] "GET /ply/PLYTalk.pdf HTTP/1.1" 206 173064
-# 81.48.212.152 - - [25/Feb/2008:09:46:03 -0600] "GET /ply/PLYTalk.pdf HTTP/1.1" 206 173064
+    count = bytes_count_iter(res)
+    print(sum(count))
+    # for line in res:
+    #     print(line, end="")
