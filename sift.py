@@ -8,6 +8,8 @@ import fnmatch
 import gzip
 import bz2
 import re
+import argparse
+import argcomplete
 
 # OPEN_IO = Union[gzip.GzipFile, bz2.BZ2File, TextIO]
 OPEN_IO = TextIO
@@ -43,10 +45,31 @@ def match_lines_iter(lines: Iterator[str], pat: str) -> Iterator[str]:
             yield line
 
 
+FILE_PAT = "*108*"
+LINE_PAT = "173064"
+parser = argparse.ArgumentParser(
+    description="Parse FILE_PAT, LINE_PAT",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+)
+parser.add_argument(
+    "--file-pat",
+    required=False,
+    default=FILE_PAT,
+    help="Select files that has ARG in names",
+)
+parser.add_argument(
+    "--line-pat",
+    required=False,
+    default=LINE_PAT,
+    help="Select lines that has ARG",
+)
+
 if __name__ == "__main__":
-    files = files_iter("www", "access-log")
+    argcomplete.autocomplete(parser)
+    args = parser.parse_args()
+    files = files_iter("www", args.file_pat)
     file_objects = open_files_iter(files)
     lines = read_lines_iter(file_objects)
-    res = match_lines_iter(lines, ".*ply.*")
+    res = match_lines_iter(lines, args.line_pat)
     for line in res:
-        print(f"{line = }")
+        print(line, end="")
