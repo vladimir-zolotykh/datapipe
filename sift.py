@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
 
-# $ python sift.py --file-pat=*108* --line-pat=1730 64
+# $ python sift.py --file-pat=*108* --line-pat=173064
 # 81.48.212.152 - - [25/Feb/2008:09:46:03 -0600] "GET /ply/PLYTalk.pdf HTTP/1.1" 206 173064
 # 81.48.212.152 - - [25/Feb/2008:09:46:03 -0600] "GET /ply/PLYTalk.pdf HTTP/1.1" 206 173064
 
