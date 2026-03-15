@@ -21,7 +21,7 @@ import itertools
 OPEN_IO = TextIO
 
 logging.basicConfig(
-    filename=f"{os.path.splitext(__file__)[0]}.log",
+    filename=f".{os.path.splitext(os.path.basename(__file__))[0]}.log",
     # filename=".sift.log",
     filemode="w",
     format="%(asctime)s %(message)s",
@@ -31,9 +31,9 @@ logging.basicConfig(
 logger = logging.getLogger(name=__name__)
 
 
-def files_iter(top: str, pat: str) -> Iterator[str]:
+def files_iter(top: str, pat: str | None = None) -> Iterator[str]:
     for path, dir, names in os.walk(top):
-        for fn in fnmatch.filter(names, pat):
+        for fn in fnmatch.filter(names, "*" if pat is None else pat):
             yield os.path.join(path, fn)
 
 
@@ -76,7 +76,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "--file-pat",
     required=False,
-    default=FILE_PAT,
+    # default=FILE_PAT,
     help="Select files that has ARG in names",
 )
 parser.add_argument(
@@ -101,9 +101,10 @@ parser.add_argument(
 if __name__ == "__main__":
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
-    files = files_iter("www", args.file_pat)
+    print(f"{args = }")
+    files = files_iter("www", args.file_pat or None)
     logger.info(f"{list(files)}")
-    files = files_iter("www", args.file_pat)
+    files = files_iter("www", args.file_pat or None)
     file_objects = open_files_iter(files)
     lines = read_lines_iter(file_objects)
     lines_to_count, lines_to_print = itertools.tee(
