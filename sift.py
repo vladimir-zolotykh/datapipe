@@ -16,6 +16,7 @@ import re
 import argparse
 import argcomplete
 import logging
+import itertools
 
 OPEN_IO = TextIO
 
@@ -84,6 +85,18 @@ parser.add_argument(
     default=LINE_PAT,
     help="Select lines that has ARG",
 )
+parser.add_argument(
+    "--print-lines",
+    action="store_false",
+    default=True,
+    help="Print selected lines",
+)
+parser.add_argument(
+    "--count",
+    action="store_true",
+    default=False,
+    help="Count bytes transferred of selected lines",
+)
 
 if __name__ == "__main__":
     argcomplete.autocomplete(parser)
@@ -93,8 +106,12 @@ if __name__ == "__main__":
     files = files_iter("www", args.file_pat)
     file_objects = open_files_iter(files)
     lines = read_lines_iter(file_objects)
-    res = match_lines_iter(lines, args.line_pat)
-    # count = bytes_count_iter(res)
-    # print(sum(count))
-    for line in res:
-        print(line, end="")
+    lines_to_count, lines_to_print = itertools.tee(
+        match_lines_iter(lines, args.line_pat), 2
+    )
+    if args.count:
+        count = bytes_count_iter(lines_to_count)
+        print(sum(count))
+    if args.print_lines:
+        for line in lines_to_print:
+            print(line, end="")
