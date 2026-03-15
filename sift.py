@@ -21,9 +21,7 @@ import itertools
 OPEN_IO = TextIO
 
 logging.basicConfig(
-    # filename=f".{os.path.basename(__file__)}.log",
-    # filename=f".{os.path.splitext(__file__)[0]}.log",
-    filename=".sift.log",
+    filename=f"{os.path.splitext(__file__)[0]}.log",  # ".sift.log"
     filemode="w",
     format="%(asctime)s %(message)s",
     datefmt="%H:%M:%S",
