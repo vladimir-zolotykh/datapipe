@@ -15,8 +15,19 @@ import bz2
 import re
 import argparse
 import argcomplete
+import logging
+import itertools
 
 OPEN_IO = TextIO
+
+logging.basicConfig(
+    filename=f".{os.path.basename(__file__)}.log",
+    filemode="w",
+    format="%(asctime)s %(message)s",
+    datefmt="%H:%M:%S",
+    level=logging.DEBUG,
+)
+logger = logging.getLogger(name=__name__)
 
 
 def files_iter(top: str, pat: str) -> Iterator[str]:
@@ -78,10 +89,11 @@ if __name__ == "__main__":
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
     files = files_iter("www", args.file_pat)
+    logger.info(f"{list(itertools.tee(files))}")
     file_objects = open_files_iter(files)
     lines = read_lines_iter(file_objects)
     res = match_lines_iter(lines, args.line_pat)
-    count = bytes_count_iter(res)
-    print(sum(count))
-    # for line in res:
-    #     print(line, end="")
+    # count = bytes_count_iter(res)
+    # print(sum(count))
+    for line in res:
+        print(line, end="")
