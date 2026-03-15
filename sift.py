@@ -21,7 +21,9 @@ import itertools
 OPEN_IO = TextIO
 
 logging.basicConfig(
-    filename=f".{os.path.basename(__file__)}.log",
+    # filename=f".{os.path.basename(__file__)}.log",
+    # filename=f".{os.path.splitext(__file__)[0]}.log",
+    filename=".sift.log",
     filemode="w",
     format="%(asctime)s %(message)s",
     datefmt="%H:%M:%S",
@@ -89,7 +91,7 @@ if __name__ == "__main__":
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
     files = files_iter("www", args.file_pat)
-    logger.info(f"{list(itertools.tee(files))}")
+    # logger.info(f"{list(files)}")
     file_objects = open_files_iter(files)
     lines = read_lines_iter(file_objects)
     res = match_lines_iter(lines, args.line_pat)
