@@ -19,6 +19,8 @@ import logging
 import itertools
 
 OPEN_IO = TextIO
+# line, filename, line_no
+LINE_TUPLE = tuple[str, str, int]
 
 logging.basicConfig(
     filename=f".{os.path.splitext(os.path.basename(__file__))[0]}.log",
@@ -50,20 +52,31 @@ def open_files_iter(names: Iterator[str]) -> Iterator[OPEN_IO]:
         fo.close()
 
 
-def read_lines_iter(open_files: Iterator[OPEN_IO]) -> Iterator[str]:
+def read_lines_iter(open_files: Iterator[OPEN_IO]) -> Iterator[LINE_TUPLE]:
     for fo in open_files:
-        yield from fo
+        for line_no, line in enumerate(fo, 1):
+            name = "No name"
+            if hasattr(fo, "name"):
+                name = fo.name
+            elif hasattr(fo, "filename"):
+                name = fo.filename
+            yield line, name, line_no
 
 
-def match_lines_iter(lines: Iterator[str], pat: str = ".*") -> Iterator[str]:
+def match_lines_iter(
+    lines: Iterator[LINE_TUPLE], pat: str = ".*"
+) -> Iterator[LINE_TUPLE]:
     for line in lines:
-        if re.search(pat, line):
+        if re.search(pat, line[0]):
             yield line
 
 
-def bytes_count_iter(lines: Iterator[str]) -> Iterator[float]:
+def bytes_count_iter(lines: Iterator[LINE_TUPLE]) -> Iterator[float]:
     for line in lines:
-        yield float(line.rsplit(None, 1)[1])
+        try:
+            yield float(line[0].rsplit(None, 1)[1])
+        except ValueError:
+            yield 0
 
 
 FILE_PAT = "*108*"
@@ -114,4 +127,4 @@ if __name__ == "__main__":
         print(sum(count))
     if args.print_lines:
         for line in lines_to_print:
-            print(line, end="")
+            print(line[0], end="")
