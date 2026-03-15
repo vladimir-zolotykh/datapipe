@@ -55,7 +55,7 @@ def read_lines_iter(open_files: Iterator[OPEN_IO]) -> Iterator[str]:
         yield from fo
 
 
-def match_lines_iter(lines: Iterator[str], pat: str) -> Iterator[str]:
+def match_lines_iter(lines: Iterator[str], pat: str = ".*") -> Iterator[str]:
     for line in lines:
         if re.search(pat, line):
             yield line
@@ -82,7 +82,7 @@ parser.add_argument(
 parser.add_argument(
     "--line-pat",
     required=False,
-    default=LINE_PAT,
+    # default=LINE_PAT,
     help="Select lines that has ARG",
 )
 parser.add_argument(
@@ -101,14 +101,13 @@ parser.add_argument(
 if __name__ == "__main__":
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
-    print(f"{args = }")
     files = files_iter("www", args.file_pat or None)
     logger.info(f"{list(files)}")
     files = files_iter("www", args.file_pat or None)
     file_objects = open_files_iter(files)
     lines = read_lines_iter(file_objects)
     lines_to_count, lines_to_print = itertools.tee(
-        match_lines_iter(lines, args.line_pat), 2
+        match_lines_iter(lines, args.line_pat or ".*"), 2
     )
     if args.count:
         count = bytes_count_iter(lines_to_count)
